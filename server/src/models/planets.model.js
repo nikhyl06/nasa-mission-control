@@ -20,7 +20,7 @@ function loadPlanetsData(){
         }))
         .on('data', (data)=>{
             if(isHabitable(data)){
-                habitablePlanets.push({kepler_name: data.kepler_name})
+                habitablePlanets.push({keplerName: data.keplerName})
             }
         })
         .on('error', (err)=>{
