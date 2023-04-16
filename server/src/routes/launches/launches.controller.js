@@ -1,15 +1,15 @@
 const {
     getAllLaunches,
-    addNewLaunch,
+    ScheduleNewLaunch,
     existsLaunchWithId,
     abortLaunch
 } = require("../../models/launches.model");
 
-function httpGetAllLaunches(req, res) {
-    return res.status(200).json(getAllLaunches());
+async function httpGetAllLaunches(req, res) {
+    return res.status(200).json(await getAllLaunches());
 }
 
-function httpPostLaunch(req, res) {
+async function httpPostLaunch(req, res) {
     const launch = req.body;
     if (
         !launch.mission ||
@@ -23,19 +23,26 @@ function httpPostLaunch(req, res) {
     if (isNaN(launch.launchDate)) {
         return res.status(400).json({ error: "date is not in proper format" });
     }
-    addNewLaunch(launch);
+    await ScheduleNewLaunch(launch);
+    console.log(launch)
     return res.status(201).json(launch);
 }
 
-function httpDeleteLaunch(req, res) {
+async function httpDeleteLaunch(req, res) {
     const LaunchId = Number(req.params.id);
 
-    if (!existsLaunchWithId(LaunchId)) {
+    const existLaunch = await existsLaunchWithId(LaunchId);
+    if (!existLaunch) {
         return res.status(404).json({
             error: "Lauch not found",
         });
     }
-    const aborted = abortLaunch(LaunchId)
+    const aborted = await abortLaunch(LaunchId)
+    if(!aborted){
+        return res.status(400).json({
+            error: "Launch not aborted",
+        });
+    }
     return res.status(200).json(aborted);
 }
 
