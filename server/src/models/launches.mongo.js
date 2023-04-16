@@ -15,7 +15,6 @@ const LaunchesSchema = new mongoose.Schema({
     },
     rocket: {
         type: String,
-        required: true
     },
     target: {
         type: String,
